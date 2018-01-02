@@ -36,7 +36,6 @@ var connection = mysql.createConnection({
     database:'monitor'
 });
 
-connection.connect();
 
 /*
 setInterval(function(){
@@ -60,7 +59,7 @@ setInterval(function(){
 
 			console.log(createtime+'\r\n');
 			
-			
+			connection.connect();
 			for (var i=0; i<len; i++) {
 				sql = 'INSERT INTO votenumber ( userid,votenumber,createtime ) VALUES ( '+ users[i].anchorId +', '+ users[i].voteNumber +','+ createtime +');';
 				connection.query(sql, function(err, rows, fields) {
@@ -68,6 +67,7 @@ setInterval(function(){
 				    //console.log('The solution is: ', rows[0].solution);
 				});
 			}
+			connection.end();
 
 
 			//console.log(sql+'\r\n');
@@ -165,11 +165,13 @@ app.get('/user', function (req, res){
 	//var userid = 2629294;
 	// 查询数据库
 	var sql = 'SELECT * from votenumber WHERE userid=' + userid + ' order by createtime desc limit 20;';
-	console.log(sql);
+	//console.log(sql);
+	connection.connect();
 	connection.query(sql, function(err, rows, fields) {
 	    if (err) throw err;
 	    res.json(rows); 
 	});
+	connection.end();
 
 });
 
